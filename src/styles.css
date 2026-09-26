@@ -273,7 +273,7 @@ button { font-family: inherit; color: inherit; }
 @keyframes bub { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
 .bubble.seat-0 { left: 176px; bottom: 22px; }
 .bubble.seat-1 { right: 20px; top: calc(42% + 56px); }
-.bubble.seat-2 { left: 50%; top: 124px; transform: translateX(-50%); }
+.bubble.seat-2 { left: 50%; top: 124px; translate: -50% 0; }
 .bubble.seat-3 { left: 20px; top: calc(42% + 56px); }
 
 .toolbar { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; padding: 4px; gap: 2px; }
@@ -293,7 +293,7 @@ button { font-family: inherit; color: inherit; }
 
 /* Aksiyon panelleri (ihale, koz, gömme, söz) */
 .action {
-  position: fixed; left: 50%; bottom: min(calc(30vh + 84px), calc(100vh - 300px)); transform: translateX(-50%); padding: 18px 20px 16px; text-align: center;
+  position: fixed; left: 50%; bottom: min(calc(30vh + 84px), calc(100vh - 300px)); translate: -50% 0; padding: 18px 20px 16px; text-align: center;
   width: min(560px, calc(100vw - 24px)); animation: pop 0.3s cubic-bezier(0.2, 0.9, 0.25, 1.15);
 }
 .action h3 { margin: 0; font: 700 21px var(--serif); }
@@ -427,4 +427,58 @@ button { font-family: inherit; color: inherit; }
   .num-grid button { height: 38px; font-size: 15px; }
   .suit-btn .s { font-size: 26px; }
   .log-panel { width: calc(100vw - 24px); }
+}
+
+/* Yatay telefon gibi alçak ekranlar: göstergeler küçülür, eylem paneli üste çıkar ki el görünsün */
+@media (max-height: 500px) and (min-width: 641px) {
+  .hud-tl { top: 8px; left: 8px; }
+  .hud-tr { top: 8px; right: 8px; }
+  .hud-tl > .icon-btn { display: none; }
+  .info-panel { padding: 6px 2px; }
+  .info-col { padding: 0 9px; min-width: 50px; }
+  .info-col .val { font-size: 17px; }
+  .info-col .sub, .info-col.opt { display: none; }
+  .koz-badge { width: 26px; height: 32px; font-size: 18px; }
+  .icon-bar .icon-btn { width: 34px; height: 34px; }
+  .status { display: none; }
+  .chip { min-width: 0; padding: 4px 10px 4px 4px; gap: 7px; }
+  .chip .av { width: 26px; height: 26px; font-size: 12px; }
+  .chip .nm { font-size: 12px; }
+  .chip .meta { font-size: 10.5px; }
+  .chip.seat-0 { left: 8px; bottom: 8px; }
+  .chip.seat-2 { top: 8px; }
+  .chip.seat-1, .chip.seat-3 { top: 34%; }
+  .chip.seat-1 { right: 8px; }
+  .chip.seat-3 { left: 8px; }
+  .bubble.seat-0 { left: 150px; bottom: 14px; }
+  .bubble.seat-2 { top: 52px; }
+  .bubble.seat-1, .bubble.seat-3 { top: calc(34% + 40px); }
+  .toolbar { bottom: 8px; }
+  .toolbar .icon-btn { width: 34px; height: 34px; }
+  .action { top: 8px; bottom: auto; padding: 10px 14px; width: min(520px, calc(100vw - 340px)); z-index: 12; }
+  .action h3 { font-size: 16px; }
+  .action .sub { font-size: 11.5px; margin-top: 2px; }
+  .action .legend { display: none; }
+  .num-grid { margin: 8px 0; gap: 6px; }
+  .num-grid button { height: 32px; font-size: 14px; border-radius: 9px; }
+  .suits { margin: 8px 0 2px; gap: 8px; }
+  .suit-btn .s { font-size: 22px; }
+  .suit-btn { padding: 8px 6px 6px; }
+  .suit-btn .c { display: none; }
+  .modal { padding: 16px 18px 14px; }
+  .modal .actions { bottom: -14px; margin-bottom: -14px; padding-bottom: 14px; }
+}
+@media (max-height: 500px) {
+  .menu-wrap { padding: 8px; }
+  .menu { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr); height: calc(100vh - 16px); height: calc(100dvh - 16px); }
+  .menu-side { display: none; }
+  .menu-head { padding-top: 12px; }
+  .menu-head h2 { font-size: 20px; }
+  .menu-head p { display: none; }
+  .menu-body { padding-top: 8px; }
+  .menu-foot { padding-top: 10px; padding-bottom: 12px; }
+}
+@media (orientation: portrait) and (min-width: 641px) {
+  .chip.seat-2 { top: 98px; }
+  .bubble.seat-2 { top: 152px; }
 }
