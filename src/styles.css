@@ -229,7 +229,7 @@ button { font-family: inherit; color: inherit; }
 .status.you .t::before { background: var(--green); box-shadow: 0 0 10px var(--green); }
 .status .d { font-size: 12.5px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
 .status .timer { height: 3px; border-radius: 3px; background: rgba(255, 255, 255, 0.08); margin-top: 9px; overflow: hidden; display: none; }
-.status .timer div { height: 100%; background: linear-gradient(90deg, var(--gold), #e07a50); width: 100%; }
+.status .timer div { height: 100%; background: linear-gradient(90deg, var(--gold), #e07a50); width: 100%; transition: width 0.1s linear; }
 .status.timed .timer { display: block; }
 
 .chip {

@@ -440,6 +440,8 @@ export class Stage {
   resize() {
     const w = window.innerWidth;
     const h = window.innerHeight;
+    // Gizli/küçültülmüş pencerede boyut anlık 0 gelebilir; en/boy oranı NaN olmasın
+    if (w < 2 || h < 2) return;
     this.renderer.setSize(w, h);
     const aspect = w / h;
     this.camera.aspect = aspect;

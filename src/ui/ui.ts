@@ -55,7 +55,7 @@ export class UI {
   private logLines: string[] = [];
   private bubbles: (HTMLElement | null)[] = [null, null, null, null];
   private bubbleTimers: number[] = [0, 0, 0, 0];
-  private timerRaf = 0;
+  private timerInt = 0;
   private modalStack: HTMLElement[] = [];
   private soundBtn: HTMLElement | null = null;
   private sortBtn: HTMLElement | null = null;
@@ -301,7 +301,7 @@ export class UI {
     this.logEl?.remove();
     this.logEl = null;
     this.chips = [null, null, null, null];
-    cancelAnimationFrame(this.timerRaf);
+    clearInterval(this.timerInt);
   }
 
   setSortIcon() {
@@ -387,7 +387,7 @@ export class UI {
 
   /** Tur süresi göstergesi; süre bitince onExpire çağrılır. Dönen fonksiyon iptal eder. */
   startTimer(sec: number, onExpire: () => void): () => void {
-    cancelAnimationFrame(this.timerRaf);
+    clearInterval(this.timerInt);
     if (!this.statusEl || sec <= 0) return () => {};
     this.statusEl.classList.add('timed');
     const bar = this.statusEl.querySelector('.timer div') as HTMLElement;
@@ -395,29 +395,31 @@ export class UI {
     let done = false;
     let pausedAt = 0;
     let pausedTotal = 0;
+    // Sekme arka plandayken ya da oyun duraklatılmışken süre işlemez
     const tick = () => {
       if (done) return;
-      if (this.isPaused()) {
-        if (!pausedAt) pausedAt = performance.now();
+      const now = performance.now();
+      if (this.isPaused() || document.hidden) {
+        if (!pausedAt) pausedAt = now;
       } else if (pausedAt) {
-        pausedTotal += performance.now() - pausedAt;
+        pausedTotal += now - pausedAt;
         pausedAt = 0;
       }
-      const el = (performance.now() - start - pausedTotal - (pausedAt ? performance.now() - pausedAt : 0)) / 1000;
+      const el = (now - start - pausedTotal - (pausedAt ? now - pausedAt : 0)) / 1000;
       const left = Math.max(0, 1 - el / sec);
       bar.style.width = `${left * 100}%`;
       if (left <= 0) {
         done = true;
+        clearInterval(this.timerInt);
         this.statusEl?.classList.remove('timed');
         onExpire();
-        return;
       }
-      this.timerRaf = requestAnimationFrame(tick);
     };
-    this.timerRaf = requestAnimationFrame(tick);
+    tick();
+    this.timerInt = window.setInterval(tick, 100);
     return () => {
       done = true;
-      cancelAnimationFrame(this.timerRaf);
+      clearInterval(this.timerInt);
       this.statusEl?.classList.remove('timed');
     };
   }

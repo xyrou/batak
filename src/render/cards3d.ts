@@ -166,7 +166,8 @@ export class CardTable {
     const half = this.stage.visibleHalfSize(depth);
     const overlap = this.stage.camera.aspect < 1 ? 0.3 : 0.44;
     const needW = CW * (1 + (n - 1) * overlap);
-    const scale = Math.min(0.92, (half.w * 2 * 0.94) / needW, (half.h * 2 * 0.3) / CH);
+    const fit = Math.min(0.92, (half.w * 2 * 0.94) / needW, (half.h * 2 * 0.3) / CH);
+    const scale = Number.isFinite(fit) && fit > 0 ? fit : 0.5;
     const spacing = CW * overlap * scale;
     const mid = (n - 1) / 2;
     const d = index - mid;
@@ -245,14 +246,15 @@ export class CardTable {
     const sorted = sortHand(cards, this.trump, true);
     const suits: number[] = [];
     for (const c of sorted) if (!suits.includes(suitOf(c))) suits.push(suitOf(c));
-    const scale = 0.78;
+    // Karşıdaki açık el uzakta kaldığı için biraz daha büyük serilir
+    const scale = seat === 2 ? 0.92 : 0.78;
     suits.forEach((s, col) => {
       const inSuit = sorted.filter((c) => suitOf(c) === s);
       inSuit.forEach((c, k) => {
         let pos: THREE.Vector3;
         if (seat === 2) {
-          const x = (col - (suits.length - 1) / 2) * 0.12;
-          pos = new THREE.Vector3(x, 0.003 + k * 0.0012, -0.58 + k * 0.046);
+          const x = (col - (suits.length - 1) / 2) * 0.135;
+          pos = new THREE.Vector3(x, 0.003 + k * 0.0012, -0.57 + k * 0.05);
         } else {
           const z = (col - (suits.length - 1) / 2) * 0.155;
           const x0 = seat === 1 ? 0.38 : -0.64;
