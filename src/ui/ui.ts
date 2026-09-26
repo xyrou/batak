@@ -340,8 +340,8 @@ export class UI {
         <div class="info-col"><div class="lbl">KOZ</div>${koz}</div>
         ${second}
         ${team}
-        <div class="info-col"><div class="lbl">TUR</div><div class="val">${Math.min(h.totalTricks, tricksPlayed + (h.phase === 'play' ? 1 : 0))}<small>/${h.totalTricks}</small></div><div class="sub">el oynanan</div></div>
-        <div class="info-col"><div class="lbl">OYUN</div><div class="val">${g.handNo}<small>/${g.config.hands}</small></div><div class="sub">${MODES[mode].short}</div></div>`;
+        <div class="info-col opt"><div class="lbl">TUR</div><div class="val">${Math.min(h.totalTricks, tricksPlayed + (h.phase === 'play' ? 1 : 0))}<small>/${h.totalTricks}</small></div><div class="sub">el oynanan</div></div>
+        <div class="info-col opt"><div class="lbl">OYUN</div><div class="val">${g.handNo}<small>/${g.config.hands}</small></div><div class="sub">${MODES[mode].short}</div></div>`;
     }
     for (const s of g.seats) {
       const chip = this.chips[s];

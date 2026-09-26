@@ -44,6 +44,7 @@ button { font-family: inherit; color: inherit; }
 #ui { position: fixed; inset: 0; pointer-events: none; }
 #ui > * { pointer-events: auto; }
 #ui .passthru { pointer-events: none; }
+#ui .passthru button { pointer-events: auto; }
 
 /* ─── Yükleme ─── */
 .loader {
@@ -292,7 +293,7 @@ button { font-family: inherit; color: inherit; }
 
 /* Aksiyon panelleri (ihale, koz, gömme, söz) */
 .action {
-  position: fixed; left: 50%; bottom: calc(clamp(150px, 31vh, 300px)); transform: translateX(-50%); padding: 18px 20px 16px; text-align: center;
+  position: fixed; left: 50%; bottom: min(calc(30vh + 84px), calc(100vh - 300px)); transform: translateX(-50%); padding: 18px 20px 16px; text-align: center;
   width: min(560px, calc(100vw - 24px)); animation: pop 0.3s cubic-bezier(0.2, 0.9, 0.25, 1.15);
 }
 .action h3 { margin: 0; font: 700 21px var(--serif); }
@@ -326,7 +327,7 @@ button { font-family: inherit; color: inherit; }
 /* Modallar */
 .modal-wrap { position: fixed; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(10, 6, 3, 0.55); z-index: 20; animation: fade 0.25s ease; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-.modal { width: min(520px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 26px 26px 22px; animation: pop 0.35s cubic-bezier(0.2, 0.9, 0.25, 1.15); scrollbar-width: thin; }
+.modal { width: min(520px, 100%); max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow: auto; padding: 26px 26px 22px; animation: pop 0.35s cubic-bezier(0.2, 0.9, 0.25, 1.15); scrollbar-width: thin; }
 .modal.wide { width: min(780px, 100%); }
 .modal h2 { margin: 0; font: 700 28px var(--serif); text-align: center; }
 .modal .lead { text-align: center; color: var(--muted); font-size: 14px; margin: 8px 0 18px; }
@@ -350,7 +351,7 @@ button { font-family: inherit; color: inherit; }
 .result-head { text-align: center; margin-bottom: 16px; }
 .result-head .big { font: 800 44px var(--serif); line-height: 1; }
 .result-head .koz { font-size: 13px; color: var(--muted); margin-top: 8px; }
-.modal .actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+.modal .actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; position: sticky; bottom: -22px; margin-bottom: -22px; padding: 14px 0 22px; background: linear-gradient(rgba(30, 22, 15, 0), rgba(30, 22, 15, 0.94) 38%); }
 .modal .actions .btn { min-width: 150px; }
 .podium { display: flex; justify-content: center; gap: 12px; margin: 10px 0 16px; align-items: flex-end; }
 .podium .p { text-align: center; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04); min-width: 110px; }
@@ -382,7 +383,8 @@ button { font-family: inherit; color: inherit; }
 
 /* Duyarlı */
 @media (max-width: 860px) {
-  .menu { grid-template-columns: 1fr; height: auto; max-height: calc(100vh - 24px); }
+  .menu-wrap { padding: 12px; }
+  .menu { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); height: calc(100vh - 24px); height: calc(100dvh - 24px); max-height: 760px; }
   .menu-side { padding: 18px 20px; flex-direction: row; align-items: center; gap: 14px; }
   .menu-side .logo-cards { margin: 0; }
   .menu-side .brand { font-size: 32px; }
@@ -397,6 +399,12 @@ button { font-family: inherit; color: inherit; }
   .menu-foot .btn { min-width: 0; flex: 1; }
 }
 @media (max-width: 640px) {
+  .hud-tl { top: 8px; left: 8px; gap: 6px; }
+  .hud-tl > .icon-btn { display: none; }
+  .hud-tr { top: 8px; right: 8px; }
+  .icon-bar .icon-btn { width: 34px; height: 34px; }
+  .info-panel { padding: 7px 2px; }
+  .info-col.opt { display: none; }
   .info-col { padding: 0 8px; min-width: 48px; }
   .info-col .val { font-size: 17px; }
   .koz-badge { width: 28px; height: 34px; font-size: 20px; }
@@ -405,12 +413,17 @@ button { font-family: inherit; color: inherit; }
   .chip .av { width: 28px; height: 28px; font-size: 12px; }
   .chip .nm { font-size: 12px; }
   .chip .meta { font-size: 10.5px; }
-  .chip.seat-2 { top: 64px; }
-  .chip.seat-1, .chip.seat-3 { top: 30%; }
-  .chip.seat-0 { bottom: 64px; }
-  .bubble.seat-0 { left: 12px; bottom: 112px; }
-  .bubble.seat-1, .bubble.seat-3 { top: calc(30% + 44px); }
-  .action { bottom: 30vh; padding: 14px; }
+  .chip.seat-2 { top: 86px; }
+  .chip.seat-1, .chip.seat-3 { top: 26%; }
+  .chip.seat-1 { right: 8px; }
+  .chip.seat-3 { left: 8px; }
+  .chip.seat-0 { left: 8px; bottom: calc(64px + 15vh); }
+  .bubble.seat-0 { left: 12px; bottom: calc(112px + 15vh); }
+  .bubble.seat-2 { top: 134px; }
+  .bubble.seat-1, .bubble.seat-3 { top: calc(26% + 44px); }
+  .toolbar { bottom: 8px; }
+  .toolbar .icon-btn { width: 36px; height: 36px; }
+  .action { bottom: calc(15vh + 112px); padding: 14px; }
   .num-grid button { height: 38px; font-size: 15px; }
   .suit-btn .s { font-size: 26px; }
   .log-panel { width: calc(100vw - 24px); }

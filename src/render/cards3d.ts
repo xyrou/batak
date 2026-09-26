@@ -48,7 +48,7 @@ export class CardView {
   setDim(d: boolean) {
     if (this.dim === d) return;
     this.dim = d;
-    this.faceMat.color.setScalar(d ? 0.5 : 1);
+    this.faceMat.color.setScalar(d ? 0.4 : 1);
   }
 
   setGlow(on: boolean, color?: string) {
@@ -164,16 +164,16 @@ export class CardTable {
   handSlot(index: number, n: number, v?: CardView): Slot {
     const depth = 0.78;
     const half = this.stage.visibleHalfSize(depth);
-    const overlap = 0.44;
+    const overlap = this.stage.camera.aspect < 1 ? 0.3 : 0.44;
     const needW = CW * (1 + (n - 1) * overlap);
-    const scale = Math.min(0.92, (half.w * 2 * 0.9) / needW, (half.h * 2 * 0.3) / CH);
+    const scale = Math.min(0.92, (half.w * 2 * 0.94) / needW, (half.h * 2 * 0.3) / CH);
     const spacing = CW * overlap * scale;
     const mid = (n - 1) / 2;
     const d = index - mid;
     const x = d * spacing;
     const arc = -Math.pow(d / Math.max(1, mid), 2) * 0.012 * scale;
     const px = (2 * half.h) / Math.max(1, window.innerHeight);
-    const baseY = -half.h + CH * scale * 0.5 + 58 * px;
+    const baseY = -half.h + CH * scale * 0.5 + (this.stage.camera.aspect < 1 ? 76 : 58) * px;
     const lift = v ? v.lift * scale : 0;
     const pos = new THREE.Vector3(x, baseY + arc + lift, -depth + index * 0.0012);
     const quat = quatFromEuler(-0.1, 0, -d * 0.022, 'XYZ');
@@ -233,10 +233,9 @@ export class CardTable {
   }
 
   buriedSlot(seat: number, i: number): Slot {
-    const { pos: base } = this.pileBase(seat);
-    const toCenter = base.clone().setY(0).normalize().multiplyScalar(-0.13);
-    const pos = base.clone().add(toCenter);
-    pos.y = 0.003 + i * 0.0011;
+    const spots: Record<number, [number, number]> = { 0: [0.56, 0.05], 1: [0.28, -0.56], 3: [-0.3, 0.44] };
+    const [x, z] = spots[seat] ?? [0.3, -0.56];
+    const pos = new THREE.Vector3(x + i * 0.004, 0.003 + i * 0.0011, z);
     return { parent: this.stage.tableLayer, pos, quat: flatDown(SEAT_ROT[seat] + 0.6 + i * 0.05), scale: 0.62 };
   }
 

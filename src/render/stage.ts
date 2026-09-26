@@ -444,16 +444,21 @@ export class Stage {
     const aspect = w / h;
     this.camera.aspect = aspect;
     // Dar ekranlarda masayı sığdırmak için görüş açısı ve mesafe uyarlanır
-    this.camera.fov = aspect < 1 ? 58 : aspect < 1.4 ? 48 : 42;
+    this.camera.fov = aspect < 1 ? 66 : aspect < 1.4 ? 48 : 42;
     this.camera.updateProjectionMatrix();
   }
 
-  /** Portre ekranda kamerayı geri çek */
-  private distScale(): number {
+  /** Dar/dikey ekranlarda masanın genişliğini sığdıracak kamera ayarı */
+  private fit(): { dist: number; pitch: number; tz: number } {
     const a = this.camera.aspect;
-    if (a >= 1.4) return 1;
-    if (a >= 1) return 1.12;
-    return Math.min(1.9, 1.15 / a);
+    const o = this.orbit;
+    if (a >= 1.4) return { dist: o.dist, pitch: o.pitch, tz: 0.03 };
+    const zoom = o.dist / VIEWS[this.view].dist;
+    const hf = Math.atan(Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * a);
+    const need = (a < 1 ? 0.8 : 0.95) / Math.tan(hf);
+    const dist = Math.max(o.dist, need * zoom);
+    const pitch = a < 1 ? Math.max(o.pitch, 1.0) : Math.max(o.pitch, 0.74);
+    return { dist, pitch, tz: a < 1 ? 0.15 : 0.06 };
   }
 
   onFrame(cb: (dt: number) => void) {
@@ -485,11 +490,13 @@ export class Stage {
     this.orbit.yaw += (this.orbitGoal.yaw - this.orbit.yaw) * k;
     this.orbit.pitch += (this.orbitGoal.pitch - this.orbit.pitch) * k;
     this.orbit.dist += (this.orbitGoal.dist - this.orbit.dist) * k;
-    const d = this.orbit.dist * this.distScale();
-    const cp = Math.cos(this.orbit.pitch);
+    const f = this.fit();
+    this.target.z = f.tz;
+    const d = f.dist;
+    const cp = Math.cos(f.pitch);
     this.camera.position.set(
       this.target.x + Math.sin(this.orbit.yaw) * cp * d,
-      this.target.y + Math.sin(this.orbit.pitch) * d,
+      this.target.y + Math.sin(f.pitch) * d,
       this.target.z + Math.cos(this.orbit.yaw) * cp * d,
     );
     this.camera.lookAt(this.target);

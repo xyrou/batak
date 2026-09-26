@@ -230,8 +230,8 @@ function drawFigureHalf(ctx: Ctx, rank: number, suit: Suit, fx: number, fy: numb
   const cx = fx + fw / 2;
   const [robeDark, robeLight] = ROBE[suit];
   const skin = '#f2cfa8';
-  const headY = fy + fh * 0.42;
-  const headR = fw * 0.13;
+  const headY = fy + fh * 0.43;
+  const headR = fw * 0.15;
 
   ctx.save();
   ctx.beginPath();

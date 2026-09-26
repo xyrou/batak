@@ -49,6 +49,9 @@ export class Director {
     this.prefs = prefs;
     this.ui.isPaused = () => this.paused;
     this.bindInput();
+    window.addEventListener('resize', () => {
+      if (this.game) this.table.refreshLift();
+    });
     stage.onFrame((dt) => {
       // Menüdeyken kamera hafifçe salınır
       if (!this.game) {
